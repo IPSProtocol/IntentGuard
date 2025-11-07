@@ -62,13 +62,19 @@ Each Outcome represents a semantically consistent result derived from the transa
 
 All Outcomes share the same canonical schema:
 
-```solidity
-struct Outcome {
-  bytes32 kind;        // MUST — event signature hash (topic0)
-  address asset;       // MUST — contract emitting the event
-  address origin;      // MUST — initiator of the change
-  address beneficiary; // MUST — final recipient, spender, or destination
-  bytes   data;        // OPTIONAL — ABI-encoded event parameters
+```js
+interface OutcomeParam {
+  type: string;  // e.g. "address", "uint256", "bool", "bytes32"
+  name?: string; // optional, from ABI if available
+  value: string; // hex or readable literal
+}
+
+interface Outcome {
+  kind: string;          // event signature hash
+  asset: string;         // contract emitting the event
+  origin: string;        // initiator
+  beneficiary: string;   // final recipient/spender
+  params?: OutcomeParam[]; // decoded event parameters
 }
 ```
 
@@ -118,6 +124,30 @@ These translation templates establish the canonical bridge between **onchain eve
 Events unrelated to the issuer (e.g., protocol-internal accounting or cross-protocol emissions) **MAY** be omitted in future extensions once standardized heuristics exist for user relevance detection.  
 
 In the current version, all events **MUST** be retained.
+
+### 6.3 Translation Service Operation
+
+Wallets and simulators **SHOULD** use a the public translation repository to convert Outcomes into plain-language summaries.  
+Each repository entry maps an `eventSignature` to a **template object** defining:
+
+- `template`: a string with placeholders (e.g., `"Transfer of {value} {symbol} from {from} to {to}"`)
+- `paramBindings`: mapping between placeholder names and Outcome parameters  
+- `verifierSignature`: signature of the contract deployer or verified maintainer  
+
+Example (JSON):
+
+```json
+{
+  "eventSignature": "Transfer(address,address,uint256)",
+  "template": "Transfer of {value} tokens from {from} to {to}",
+  "paramBindings": { "from": 0, "to": 1, "value": 2 },
+  "verifierSignature": "0x..."
+}
+```
+
+Wallets render Outcomes by substituting parameter values from the decoded Outcome.params array into the verified template.
+
+Translations SHOULD be cached and versioned to ensure consistent UX across wallets and prevent tampering or ambiguity.
 
 # 7. Offchain Asset Access Control
 
