@@ -43,7 +43,7 @@ The goal of this ERC is pragmatic: to mitigate the most prevalent transaction-le
 The account whose assets or permissions may be affected by the transaction (typically `tx.from`).
 
 **Outcome** —  
-A normalized representation of the transaction’s runtime outcome obtained through simulation, including token transfers, approvals, or native-ETH movements.
+A normalized representation of the transaction’s runtime outcome obtained through simulation, including token transfers, approvals, native-ETH movements, etc..
 
 **Policy** —  
 A local, per-account, user-defined rule evaluated by the wallet or plugin to determine whether specific actions are permitted, require explicit confirmation, or are blocked by default.
@@ -62,7 +62,7 @@ Each Outcome represents a semantically consistent result derived from the transa
 
 All Outcomes share the same canonical schema:
 
-\`\`\`solidity
+```solidity
 struct Outcome {
   bytes32 kind;        // MUST — event signature hash (topic0)
   address asset;       // MUST — contract emitting the event
@@ -70,7 +70,7 @@ struct Outcome {
   address beneficiary; // MUST — final recipient, spender, or destination
   bytes   data;        // OPTIONAL — ABI-encoded event parameters
 }
-\`\`\`
+```
 
 > *EVM-native:* \`kind = keccak256(canonical event signature)\`  
 > Example: \`keccak256("Transfer(address,address,uint256)")\`
@@ -84,7 +84,7 @@ grouping does not alter the canonical data used for hashing or verification.
 
 # 5. Offchain Signature Simulation
 
-Wallets **SHOULD** simulate off-chain signatures (e.g., EIP-2612 `permit`, Permit2, `delegation`) by reproducing their on-chain execution effects in a sandbox environment identical to transaction simulation.  
+Wallets **MUST** simulate off-chain signatures (e.g., EIP-2612 `permit`, Permit2, `delegation`) by reproducing their on-chain execution effects in a sandbox environment identical to transaction simulation.  
 
 Extracted Outcomes from these simulations **MUST** follow the same canonical schema.
 
@@ -107,7 +107,7 @@ Wallets **MUST** display the verified signer identity or checksum to the user wh
 ## 6.1 Display Rules
 
 - All Outcomes **SHOULD** be displayed. Events that do not involve the user (e.g., emissions related solely to third-party interactions) **MAY** be omitted.  
-- Events involving **unknown crypto assets** **SHOULD** trigger a clear warning.  
+- Events involving **unknown crypto assets** or **events without transalation** **SHOULD** trigger a clear warning.  
 - Wallets **MAY** enhance formatting using known metadata (token symbol, name, decimals) or verified naming sources.  
 - Localization and UI adaptations **MAY** be applied, provided that numerical values and semantics remain unaltered.
 
@@ -127,13 +127,13 @@ To prevent unintended or malicious operations, wallets implementing this ERC **S
 
 Wallets **MAY** implement either a coarse-grained **asset-level policy** or a fine-grained **action-based policy**, depending on their threat model and UX design.
 
-\`\`\`solidity
+```solidity
 enum AssetState { LOCKED, UNLOCKED }
 
 struct AssetPolicy {
   AssetState state; // Simplified: lock or unlock a specific asset
 }
-\`\`\`
+```
 
 ## 7.2 Policy Evaluation Lifecycle
 
@@ -142,11 +142,11 @@ If the transaction violates any active policy, the wallet **MUST** either block 
 
 # 8. Security Considerations
 
-- If simulation fails or yields incomplete results, wallets **MUST** alert the user and display a clear “Simulation Unavailable” warning.  
-- Outcomes **MUST** be derived directly from the calldata corresponding to the pending transaction; wallets **MUST** prevent substitution or tampering.  
+- Outcomes **MUST** be derived directly from the calldata corresponding to the pending transaction; 
+- Any transaction substitution **MUST** be simulated again.
 - Wallets **MUST NOT** allow external scripts to bypass or override local policy evaluation.  
-- Users **SHOULD** back up or export their policy configurations securely to prevent accidental loss of protection.  
-- Wallets **SHOULD** maintain consistency between simulation blockTag and signing state to avoid simulation drift.  
+- Users **Could** back up or export their policy configurations securely to prevent accidental loss of protection.  
+- Wallets **MUST** maintain consistency between simulation blockTag and signing state to avoid simulation drift.  
 
 This ERC is consensus-neutral and purely client-side. It standardizes the interface and semantics of the final security layer between transaction simulation and signature authorization.
 
@@ -159,7 +159,7 @@ By combining **outcome-based simulation** with **user-governed offchain access c
 
 ## 9.1 Future Research Directions
 
-- **Transaction Fidelity Verification** — Onchain attestation of simulation hashes and post-execution equivalence, enabling verifiable proof that execution matches the reviewed outcome.  
+- **Transaction Fidelity Verification** — Onchain attestation of simulation hashes and execution equivalence between the user intent and transaction outcome at inclusion, providing verifiable proof that execution matches the user’s intent and protecting against advanced phishing, TOCTOU attacks and malicious MEV — effectively enabling true *“What You See Is What You Get”* transaction fidelity.
 - **Expanded Outcome Schemas** — Standardized mappings for domain-specific protocols such as lending, staking, and vault operations to broaden semantic coverage.  
 - **Distributed Policy Registries** — Shared, attestable repositories of policy configurations for institutional, custodial, or enterprise-grade wallets.  
 
