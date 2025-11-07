@@ -24,7 +24,7 @@ The protocol addresses critical vulnerabilities including:
 
 Phase 1 provides **immediate, implementable security improvements** that wallets can deploy today to protect users from the most common attack vectors, without requiring any consensus changes or ecosystem-wide coordination.
 
-📄 **Specification**: [`phase 1/erc-outcome-based-simulation.md`](phase%201/erc-outcome-based-simulation.md)
+📄 **Specification**: [`ERC - phase 1/erc-outcome-based-simulation.md`](phase%201/erc-outcome-based-simulation.md)
 
 #### What It Does
 
@@ -57,9 +57,9 @@ Phase 1 provides **immediate, implementable security improvements** that wallets
 Phase 2 presents the **comprehensive, long-term solution** that achieves true *transaction fidelity* — cryptographically verifiable proof that execution matches user intent. This requires ecosystem coordination but provides complete protection.
 
 📄 **Specifications**:
-- [`phase 2/erc-intent.md`](phase%202/erc-intent.md) — Intent standard (ERC-XXXX)
-- [`phase 2/eip-intent-verification.md`](phase%202/eip-intent-verification.md) — Verification layer (EIP-YYYY)
-- [`phase 2/TFS-1.md`](phase%202/TFS-1.md) — Transaction Fidelity Standard overview
+- [`ERC & EIP - phase 2/erc-intent.md`](phase%202/erc-intent.md) — Intent standard (ERC-XXXX)
+- [`ERC & EIP - phase 2/eip-intent-verification.md`](phase%202/eip-intent-verification.md) — Verification layer (EIP-YYYY)
+- [`ERC & EIP - phase 2/TFS-1.md`](phase%202/TFS-1.md) — Transaction Fidelity Standard overview
 
 #### What It Does
 
@@ -216,8 +216,8 @@ We welcome:
 ## Learn More
 
 - **Context & Motivation**: [`context.md`](context.md)
-- **Phase 1 Specification**: [`phase 1/erc-outcome-based-simulation.md`](phase%201/erc-outcome-based-simulation.md)
-- **Phase 2 Specifications**: [`phase 2/`](phase%202/)
+- **Phase 1 Specification**: [`ERC - phase 1/erc-outcome-based-simulation.md`](phase%201/erc-outcome-based-simulation.md)
+- **Phase 2 Specifications**: [`ERC & EIP - phase 2/`](phase%202/)
   - Intent Standard: `erc-intent.md`
   - Verification Layer: `eip-intent-verification.md`
   - Transaction Fidelity Standard: `TFS-1.md`
