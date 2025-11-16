@@ -1,3 +1,4 @@
+# WORK IN PROGRESS
 ---
 EIP: YYYY
 title: Intent Verification — Pre-Inclusion Effect Equivalence for Transaction Fidelity

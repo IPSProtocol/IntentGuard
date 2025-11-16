@@ -1,3 +1,4 @@
+# WORK IN PROGRESS
 ---
 ERC: XXXX
 Title: IntentGuard — Transaction Contractualization for Execution Fidelity
